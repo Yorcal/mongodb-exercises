@@ -13,6 +13,7 @@ Error : MongoInvalidArgumentError: Update document requires atomic operators
 db.laptops.find().sort({ "price": 1 }).limit(2).forEach(doc => printjson({ name: doc.name, price: doc.price, OS: doc.properties.OS }))
 
 
+
 // 4 Donnez la liste de tous les ordinateurs portables avec au moins 1 avis avec une note comprise entre 4 et 4,2
 db.laptops.find({"reviews": {$elemMatch: {"score": { $gte: 4, $lte: 4.2 }}}})
 

@@ -25,4 +25,9 @@ db.irons.forEach(metal => {
 // Mettez à jour tous les prix des métaux.
 // Remarque : pour parcourir le littéral objet des remises, vous pouvez utiliser le code suivant
 // `for (var key in discounts) { … }`
+var discounts = { 'Calor': 1, 'Tefal': 5, 'Philips': 3 }
+for (var brandName in discounts) {
+    var priceIncrease = discounts[brandName] * -1;
+    db.irons.updateMany({ brand: brandName }, { $inc: { price: priceIncrease } })
+}
 
