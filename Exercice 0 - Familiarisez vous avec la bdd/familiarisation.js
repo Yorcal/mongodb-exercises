@@ -61,3 +61,4 @@ db."collection".find()
 */
 // Vous allez maintenant changer de BDD pour pouvoir travailler sur vos propres documents.
 // Pour cela, utilisez la commande la commande de la question 2 pour ouvrir la BDD qui porte les noms des membre de votre groupe.
+  
