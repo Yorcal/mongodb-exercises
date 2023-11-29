@@ -51,34 +51,44 @@ Ci-dessous, vous pouvez consulter la base de données d'un service de livraison 
 
 - Écrivez une requête pour récupérer tous les utilisateurs de la collection "utilisateurs".
 
-`Votre réponse..`
+db.utilisateurs.find()
 
 - Écrivez une requête pour récupérer toutes les commandes datées du 16 janvier 2023. À grande echelle, cette requête est-elle efficace ? Pourquoi ?
 
-`Votre réponse..`
+db.commandes.find({"Date de commande": {$gte: ISODate("2023-01-16T00:00:00"),$lt: ISODate("2023-01-17T00:00:00")}})
+
+Cela ne serait pas efficace à grande échelle car il faudrait d'abord trier toutes les commandes par date, puis de s'arreter si on dépasse la date. Surement car la quantité de comparaison doit être plus lourds
+que des nombres lambda.
 
 #### Mise à jour de données
 
 - Modifiez le document d'un utilisateur pour mettre à jour son adresse e-mail (choisissez une nouvelle adresse mail).
 - Modifiez le document du restaurand Sushi Express pour ajouter un champ "fermeture" avec la date du "01/12/2023". Une opération pareille aurait-elle été possible en SQL ?
 
-`Votre réponse..`
+db.utilisateurs.updateOne({ UserID: 1 },{ $set: { "Adresse e-mail": "Gmail@gmail.com" } });
+
+db.restaurants.updateOne( { "Nom du restaurant": "Sushi Express" }, { $set: { "fermeture": "01/12/2023" } } );
+Non une opération pareil, n'aurait pas pu être possible aussi facilement en sql car il aurait fallu aussi mettre une date de fermeture sur l'autre restaurant, et crée une colonne.
 
 - Supprimez le restaurant Sushi-express. Remarquez-vous une incohérence dans l'ensemble de base de donnée ?
 
-`Votre réponse..`
+db.restaurants.deleteOne({ "Nom du restaurant": "Sushi Express" });
+
+Il y a une incohérence sur l'id du restaurant référencé dans le document produits, car le restaurant n'existe plus mais les sashimis le référence encore avec l'id
 
 #### Agrégation de données
 Ressource utile : https://www.mongodb.com/docs/manual/core/map-reduce/ https://www.youtube.com/watch?v=cHGaQz0E7AU https://www.youtube.com/watch?v=fEACZP_878Y
 - Utilisez l'agrégation pour trouver la moyenne des prix des produits.
  
-`Votre réponse..`
+db.produits.aggregate([{$group: {_id: null,moyennePrix: { $avg: "$Prix" }}}])
+La moyenne est de 18,49.
+
 
 - Utilisez l'agrégation pour regrouper les utilisateurs par adresse et compter combien d'utilisateurs ont la même adresse.
  
-`Votre réponse..`
+db.utilisateurs.aggregate([{$group: {_id: "$Adresse",count: { $sum: 1 }}}])
+
 
 - En considérant le fait que MongoDB dispatch ses données sur plusieurs serveurs, en quoi cette méthode "d'agrégation" permet à MongoDB de travailler efficacement ?
 
-`Votre réponse..`
-
+Gràce a cette méthode, MongoDB permet de Threadés ces serveurs et donc de ne pas être déborder par de multiples petites requêtes ralentissant le tout.
